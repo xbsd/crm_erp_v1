@@ -25,10 +25,13 @@ if str(REPO_ROOT) not in sys.path:
 from webapp.env_loader import load_env  # noqa: E402
 load_env(verbose=True)
 
+import time  # noqa: E402
+
 from fastapi import FastAPI, Request  # noqa: E402
 from fastapi.responses import HTMLResponse  # noqa: E402
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 from fastapi.templating import Jinja2Templates  # noqa: E402
+from starlette.middleware.base import BaseHTTPMiddleware  # noqa: E402
 
 from webapp.agent_runner import AgentRunner  # noqa: E402
 from webapp.api.data import register_data_routes  # noqa: E402
@@ -55,9 +58,31 @@ async def lifespan(app: FastAPI):
         await runner.__aexit__(None, None, None)
 
 
+class NoCacheStaticMiddleware(BaseHTTPMiddleware):
+    """Tell browsers to revalidate /static assets on every request.
+
+    Hot-reload-friendly: editing dashboard.js etc. takes effect on the
+    next page load without needing a hard refresh.
+    """
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        if request.url.path.startswith("/static/"):
+            response.headers["Cache-Control"] = "no-store, must-revalidate"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+        return response
+
+
 app = FastAPI(title="Enterprise AI Workbench", lifespan=lifespan)
+app.add_middleware(NoCacheStaticMiddleware)
 app.mount("/static", StaticFiles(directory=str(Path(__file__).parent / "static")), name="static")
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
+
+# Static-asset version tag — re-stamped at app start so every server reboot
+# busts the browser cache. Template files reference {{ asset_v }} on
+# <script> and <link> tags.
+ASSET_V = str(int(time.time()))
+templates.env.globals["asset_v"] = ASSET_V
 
 # Pass templates into route modules
 app.state.templates = templates

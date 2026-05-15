@@ -3,7 +3,7 @@
 {% block breadcrumb %}Workspace · <strong>AI Assistant</strong>{% endblock %}
 
 {% block extra_head %}
-    <link rel="stylesheet" href="/static/css/assistant.css">
+    <link rel="stylesheet" href="/static/css/assistant.css?v={{ asset_v }}">
 {% endblock %}
 
 {% block main %}
@@ -90,5 +90,5 @@
     </aside>
 </div>
 
-<script src="/static/js/assistant.js"></script>
+<script src="/static/js/assistant.js?v={{ asset_v }}"></script>
 {% endblock %}
