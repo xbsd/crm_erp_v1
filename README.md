@@ -140,6 +140,67 @@ Plus a downloadable **9-slide Sales Quarterly Update PowerPoint** (`outputs/sale
 
 ---
 
+## 🖥️ Enterprise AI Workbench (Streamlit UI)
+
+Six-page application with a custom design system, live agent orchestration, and drill-down views.
+
+### 📊 Executive Dashboard
+
+KPI strip, top-account ranking, quarterly revenue trend, industry mix, pipeline funnel, top movers, narrative insight cards, and a reliability watch-list — all on one screen with a persona switcher.
+
+![Executive Dashboard](docs/images/ui_dashboard.png)
+
+### 🤖 AI Assistant
+
+Multi-turn conversational interface. Per-conversation history in the sidebar, persona switcher, model selector (Sonnet 4.5 / Opus 4.7 / Haiku 4.5), suggested prompts filtered by persona, live tool-call streaming inside `st.status`, right-panel "Conversation insights" with server pills + sequenced tool trace + suggested follow-ups, and "online" status indicators for each of the four MCP servers in the header.
+
+![AI Assistant](docs/images/ui_assistant.png)
+
+### 👥 Customer 360
+
+Pick an account → see CRM + ERP + QA together. Hero card with avatar, key-account flag, and inline KPIs; tabs for Overview / CRM (opportunities + quotes) / ERP (orders + invoices + AR aging) / QA (returns) / Ask AI; booking-pattern chart; contact list; "Ask AI" deep-links that auto-open the Assistant with a pre-filled prompt.
+
+![Customer 360](docs/images/ui_customer360.png)
+
+### 🔬 Product Reliability Hub
+
+Per-product circular reliability score (color-coded by grade), MTBF / failure-rate dual-axis trend, failure-mode distribution, returns-by-reason ranking, affected accounts table, compliance status with expiry pills, qualification-testing table. Sidebar shows a watch-list of products below 75. CTA generates a one-page reliability briefing via the AI Assistant.
+
+![Product Reliability](docs/images/ui_reliability.png)
+
+### 🔧 Tool Catalog
+
+All 33 MCP tools grouped by server with color-coded headers and search/filter. Each tool expands to show its description, JSON-Schema-derived input table, and a built-in "Try it" form so you can invoke any tool manually with form-validated inputs and inspect the raw JSON response.
+
+![Tool Catalog](docs/images/ui_catalog.png)
+
+### ⚙️ System Health
+
+Four MCP-server status cards with row-count badges, per-database expandable table-row inventory with charts, Anthropic runtime configuration (model, max iterations, API key status), and a live session-scoped agent activity log.
+
+![System Health](docs/images/ui_system_health.png)
+
+### Design system
+
+Custom CSS layer with design tokens for color, spacing, and typography. Server-color identity (CRM = blue, ERP = green, QA = purple, Analytics = orange) is used consistently across tool cards, status strips, and section headers. KPI cards use a 4 px accent stripe and uppercase eyebrow labels. Status pills carry a colored dot and dimmed background. Dataframes, expanders, tabs, and chat bubbles are all themed to match.
+
+```
+ui/
+├── streamlit_app.py        # entry — st.navigation() router
+├── theme.py                # design tokens + global CSS injection
+├── widgets.py              # kpi_card, tool_call_card, status_pill, account_card, ...
+├── data_access.py          # cached, direct (non-MCP) reads for dashboards
+└── pages/
+    ├── dashboard.py        # Executive Dashboard
+    ├── assistant.py        # Multi-turn AI chat with live tool trace
+    ├── customer360.py      # CRM + ERP + QA per account
+    ├── reliability.py      # Product Reliability Hub
+    ├── catalog.py          # 33-tool browser with "Try it"
+    └── system.py           # MCP server status + DB stats + activity log
+```
+
+---
+
 ## 🧭 How the agent routes questions
 
 Heat-map of which MCP server answered each of the 8 use cases (generated from the actual end-to-end run):
