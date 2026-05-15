@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Enterprise AI Workbench{% endblock %}</title>
+    <meta name="theme-color" content="#000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="/static/css/theme.css">
+    <script src="/static/js/util.js"></script>
+    {% block extra_head %}{% endblock %}
+    <script>
+        // Apply saved theme before paint; default to dark
+        try { const t = localStorage.getItem('theme') || 'dark'; document.documentElement.dataset.theme = t; } catch(e) {}
+    </script>
+</head>
+<body>
+<div class="app">
+
+    <!-- Brand header with horizontal tab nav -->
+    <header class="brand-header kairos-header-edge">
+        <a class="brand-link" href="/">
+            <div class="brand-mark">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="4 17 10 11 4 5"></polyline>
+                    <line x1="12" y1="19" x2="20" y2="19"></line>
+                </svg>
+            </div>
+            <div>
+                <div class="kairos-shimmer brand-wordmark">ENTERPRISE&nbsp;AI</div>
+                <div class="brand-sub">MCP&nbsp;·&nbsp;Workbench</div>
+            </div>
+        </a>
+
+        <nav class="tab-nav">
+            <a class="tab-item {% if current_page == 'dashboard' %}active{% endif %}" href="/">
+                <span class="tab-icon">▣</span> Dashboard
+            </a>
+            <a class="tab-item {% if current_page == 'assistant' %}active{% endif %}" href="/assistant">
+                <span class="tab-icon">◆</span> Assistant
+            </a>
+            <a class="tab-item {% if current_page == 'customer360' %}active{% endif %}" href="/customer-360">
+                <span class="tab-icon">◉</span> Customer&nbsp;360
+            </a>
+            <a class="tab-item {% if current_page == 'reliability' %}active{% endif %}" href="/reliability">
+                <span class="tab-icon">▼</span> Reliability
+            </a>
+            <a class="tab-item {% if current_page == 'tools' %}active{% endif %}" href="/tools">
+                <span class="tab-icon">▥</span> Tools
+            </a>
+            <a class="tab-item {% if current_page == 'data_model' %}active{% endif %}" href="/data-model">
+                <span class="tab-icon">▦</span> Data&nbsp;Model
+            </a>
+            <a class="tab-item {% if current_page == 'system' %}active{% endif %}" href="/system">
+                <span class="tab-icon">●</span> System
+            </a>
+        </nav>
+
+        <div class="brand-actions">
+            <div class="live-pill" title="MCP servers connected">
+                <span class="live-dot"></span> LIVE
+            </div>
+            <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+                <span id="theme-icon">☾</span><span id="theme-label">DARK</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Server status strip (Kairos ticker-tape replacement) -->
+    <div class="server-strip" id="server-strip">
+        <span class="strip-item crm"><span class="strip-label">CRM</span> <span class="strip-value">10 tools</span></span>
+        <span class="strip-item erp"><span class="strip-label">ERP</span> <span class="strip-value">9 tools</span></span>
+        <span class="strip-item qa"><span class="strip-label">QA</span> <span class="strip-value">7 tools</span></span>
+        <span class="strip-item analytics"><span class="strip-label">ANALYTICS</span> <span class="strip-value">7 tools</span></span>
+        <span class="strip-item"><span class="strip-label">MODEL</span> <span class="strip-value" id="strip-model">claude-sonnet-4-5</span></span>
+        <span class="strip-item"><span class="strip-label">PERIOD</span> <span class="strip-value">2026-Q1</span></span>
+        <span class="strip-item"><span class="strip-label">DATA</span> <span class="strip-value">2024-01 → 2026-05</span></span>
+    </div>
+
+    <!-- Main -->
+    <main class="main">
+        {% block main %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <span>ENTERPRISE&nbsp;AI&nbsp;·&nbsp;MCP&nbsp;WORKBENCH&nbsp;v0.2</span>
+        <span id="footer-status">{% block footer_status %}CRM · ERP · QA · ANALYTICS{% endblock %}</span>
+    </footer>
+</div>
+
+<script src="/static/js/theme.js"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

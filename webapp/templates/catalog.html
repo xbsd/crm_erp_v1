@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Tool Catalog · Enterprise AI Workbench{% endblock %}
+{% block breadcrumb %}Operations · <strong>Tool Catalog</strong>{% endblock %}
+
+{% block main %}
+<div class="page-header">
+    <div>
+        <div class="page-eyebrow">{{ tool_catalog|length }} MCP tools · {{ servers|length }} servers</div>
+        <h1 class="page-title">Tool Catalog</h1>
+        <p class="page-subtitle">Every tool the agent can call, grouped by server. Try any tool live with the form-based invoker.</p>
+    </div>
+    <input type="search" id="search" class="input" placeholder="Search tools…" style="max-width: 280px;">
+</div>
+
+<div id="catalog"></div>
+
+<script src="/static/js/catalog.js"></script>
+{% endblock %}
