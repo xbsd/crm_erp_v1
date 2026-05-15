@@ -85,8 +85,12 @@
         marker: { color: palette.crm, opacity: 0.85 },
         hovertemplate: '%{y}<br>$%{x:,.0f}<br>weighted: $%{customdata:,.0f}<extra></extra>',
         customdata: stages.map(s => s.weighted_amount),
-    }], { ...commonLayout, xaxis: { ...commonLayout.xaxis, tickformat: '$,.2s' } },
-        { displayModeBar: false, responsive: true });
+    }], {
+        ...commonLayout,
+        xaxis: { ...commonLayout.xaxis, tickformat: '$,.2s' },
+        yaxis: { ...commonLayout.yaxis, type: 'category', automargin: true },
+        margin: { ...commonLayout.margin, l: 110 },
+    }, { displayModeBar: false, responsive: true });
 
     // ----- Top accounts -----
     const top = data.top_key_accounts;
@@ -97,8 +101,12 @@
         marker: { color: palette.brand, opacity: 0.85 },
         hovertemplate: '%{y}<br>Revenue: $%{x:,.0f}<br>Pipeline: $%{customdata:,.0f}<extra></extra>',
         customdata: top.map(r => r.open_pipeline).reverse(),
-    }], { ...commonLayout, xaxis: { ...commonLayout.xaxis, tickformat: '$,.2s' } },
-        { displayModeBar: false, responsive: true });
+    }], {
+        ...commonLayout,
+        xaxis: { ...commonLayout.xaxis, tickformat: '$,.2s' },
+        yaxis: { ...commonLayout.yaxis, type: 'category', automargin: true },
+        margin: { ...commonLayout.margin, l: 150 },
+    }, { displayModeBar: false, responsive: true });
 
     // ----- Industry donut -----
     const ind = data.revenue_by_industry;
