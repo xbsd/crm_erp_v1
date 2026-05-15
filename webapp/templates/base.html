@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Enterprise AI Workbench{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/theme.css">
+    <script src="/static/js/util.js"></script>
+    {% block extra_head %}{% endblock %}
+    <script>
+        // Apply saved theme before paint
+        try { const t = localStorage.getItem('theme') || 'light'; document.documentElement.dataset.theme = t; } catch(e) {}
+    </script>
+</head>
+<body>
+<div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <a class="brand" href="/">
+            <div class="brand-mark">AI</div>
+            <div>
+                <div class="brand-title">Enterprise AI</div>
+                <div class="brand-sub">MCP Workbench</div>
+            </div>
+        </a>
+        <nav class="nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Workspace</div>
+                <a class="nav-item {% if current_page == 'dashboard' %}active{% endif %}" href="/">
+                    <span class="nav-icon">📊</span> Executive Dashboard
+                </a>
+                <a class="nav-item {% if current_page == 'assistant' %}active{% endif %}" href="/assistant">
+                    <span class="nav-icon">🤖</span> AI Assistant
+                </a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Drill-down</div>
+                <a class="nav-item {% if current_page == 'customer360' %}active{% endif %}" href="/customer-360">
+                    <span class="nav-icon">👥</span> Customer 360
+                </a>
+                <a class="nav-item {% if current_page == 'reliability' %}active{% endif %}" href="/reliability">
+                    <span class="nav-icon">🔬</span> Product Reliability
+                </a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Operations</div>
+                <a class="nav-item {% if current_page == 'tools' %}active{% endif %}" href="/tools">
+                    <span class="nav-icon">🔧</span> Tool Catalog
+                </a>
+                <a class="nav-item {% if current_page == 'data_model' %}active{% endif %}" href="/data-model">
+                    <span class="nav-icon">🗂️</span> Data Model
+                </a>
+                <a class="nav-item {% if current_page == 'system' %}active{% endif %}" href="/system">
+                    <span class="nav-icon">⚙️</span> System Health
+                </a>
+            </div>
+        </nav>
+        <div class="sidebar-footer">
+            <div><span class="status-dot"></span>All systems operational</div>
+            <div style="margin-top: 6px;">CRM · ERP · QA · Analytics</div>
+        </div>
+    </aside>
+
+    <!-- Topbar -->
+    <header class="topbar">
+        <div class="topbar-title">
+            <span>{% block breadcrumb %}{% endblock %}</span>
+        </div>
+        <div class="topbar-actions">
+            <div class="server-pills" id="server-pills" title="MCP server health">
+                <span class="server-pill crm">CRM</span>
+                <span class="server-pill erp">ERP</span>
+                <span class="server-pill qa">QA</span>
+                <span class="server-pill analytics">Analytics</span>
+            </div>
+            <button class="icon-btn" id="theme-toggle" title="Toggle theme">☼</button>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+        {% block main %}{% endblock %}
+    </main>
+</div>
+
+<script src="/static/js/theme.js"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

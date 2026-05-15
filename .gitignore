@@ -9,6 +9,8 @@ outputs/*.pptx
 outputs/*.png
 outputs/*.html
 outputs/*.json
+outputs/ui_screenshots/
 !outputs/.gitkeep
 .pytest_cache/
 .streamlit/secrets.toml
+/tmp/webapp.log

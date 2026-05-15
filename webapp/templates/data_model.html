@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title %}Data Model · Enterprise AI Workbench{% endblock %}
+{% block breadcrumb %}Operations · <strong>Data Model</strong>{% endblock %}
+
+{% block main %}
+<div class="page-header">
+    <div>
+        <div class="page-eyebrow">PDF: AI Data Model and Questions</div>
+        <h1 class="page-title">Data Model & System Map</h1>
+        <p class="page-subtitle">How the PDF data model maps to the CRM, ERP, and QA databases, and how every table participates in the eight executive use cases.</p>
+    </div>
+    <a href="/system" class="btn">⚙️ Open System Health</a>
+</div>
+
+<!-- The end-to-end process diagram -->
+<div class="card" style="margin-bottom: 22px;">
+    <div class="card-header">
+        <div class="card-title">🔄 End-to-end process · Lead → Quote → Order → Invoice → Revenue → Reliability feedback</div>
+        <div class="card-eyebrow">PDF Source</div>
+    </div>
+    <div class="card-body">
+        <p style="margin-bottom: 14px; color: var(--text-secondary);">The application implements the full life cycle from the PDF: lead generation through revenue recognition,
+        plus a quality-and-reliability feedback loop that pushes data back into the CRM as opportunity-level insights.</p>
+        <div class="flow" style="border: none; padding: 0; background: transparent; gap: 8px;">
+            <span class="flow-step crm" style="background: var(--crm-tint); color: var(--crm);">1 · Lead capture (CRM)</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-step crm" style="background: var(--crm-tint); color: var(--crm);">2 · Account mgmt</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-step crm" style="background: var(--crm-tint); color: var(--crm);">3 · Opportunity</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-step crm" style="background: var(--crm-tint); color: var(--crm);">4 · Quote</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-step erp" style="background: var(--erp-tint); color: var(--erp);">5 · Sales order (ERP)</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-step erp" style="background: var(--erp-tint); color: var(--erp);">6 · Invoice</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-step erp" style="background: var(--erp-tint); color: var(--erp);">7 · Revenue → CRM</span>
+            <span class="flow-arrow">⤴</span>
+            <span class="flow-step qa" style="background: var(--qa-tint); color: var(--qa);">8 · QA reliability feedback</span>
+        </div>
+    </div>
+</div>
+
+<!-- Three system tiles -->
+<div class="grid k3 g20" style="margin-bottom: 22px;">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">🟦 Salesforce CRM (Front office)</div>
+            <div class="card-eyebrow">11 tables</div>
+        </div>
+        <div class="card-body">
+            <p style="color: var(--text-secondary);">Owns the customer-facing life cycle: leads, accounts, contacts, opportunities, products & pricebook, quotes & line items. Two sync tables receive feedback from ERP (revenue) and QA (reliability insights).</p>
+            <table class="data" style="margin-top: 10px;">
+                <tr><th>Table</th><th>Role</th></tr>
+                <tr><td><span class="mono">users</span></td><td>Sales reps & managers (Salesforce User)</td></tr>
+                <tr><td><span class="mono">accounts</span></td><td>Customer master, key-account flag</td></tr>
+                <tr><td><span class="mono">contacts</span></td><td>Contacts tied to accounts</td></tr>
+                <tr><td><span class="mono">leads</span></td><td>Lead capture & qualification</td></tr>
+                <tr><td><span class="mono">opportunities</span></td><td>Pipeline incl. close stage</td></tr>
+                <tr><td><span class="mono">products</span></td><td>Product catalog with design specs</td></tr>
+                <tr><td><span class="mono">pricebook_entries</span></td><td>Pricelist variants</td></tr>
+                <tr><td><span class="mono">quotes</span></td><td>Customer quotes</td></tr>
+                <tr><td><span class="mono">quote_line_items</span></td><td>Quote details</td></tr>
+                <tr><td><span class="mono">quote_revenue_sync</span></td><td>Revenue pushed back from ERP</td></tr>
+                <tr><td><span class="mono">reliability_insights_sync</span></td><td>QA → CRM insight on product/opp/account</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">🟩 ERP System (Back office)</div>
+            <div class="card-eyebrow">8 tables</div>
+        </div>
+        <div class="card-body">
+            <p style="color: var(--text-secondary);">Owns transactional & financial state: customer master, item master, sales orders, invoices, payments, GL, and recognized revenue. Integration keys link every row back to the CRM.</p>
+            <table class="data" style="margin-top: 10px;">
+                <tr><th>Table</th><th>Role</th></tr>
+                <tr><td><span class="mono">customers</span></td><td>ERP customer master · ext_account_id ↔ CRM</td></tr>
+                <tr><td><span class="mono">items</span></td><td>ERP item master · ext_product_id ↔ CRM</td></tr>
+                <tr><td><span class="mono">sales_orders</span></td><td>SO with optional ext_quote_id ↔ CRM quote</td></tr>
+                <tr><td><span class="mono">sales_order_lines</span></td><td>Line-level SO data</td></tr>
+                <tr><td><span class="mono">invoices</span></td><td>Customer invoices, recognition status</td></tr>
+                <tr><td><span class="mono">invoice_lines</span></td><td>Line-level invoice data</td></tr>
+                <tr><td><span class="mono">payments</span></td><td>Cash applications</td></tr>
+                <tr><td><span class="mono">gl_entries</span></td><td>GL journal entries</td></tr>
+                <tr><td><span class="mono">revenue</span></td><td>Recognized revenue (per period, per item)</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">🟪 QA / Reliability</div>
+            <div class="card-eyebrow">9 tables</div>
+        </div>
+        <div class="card-body">
+            <p style="color: var(--text-secondary);">Owns reliability data: test specs and runs, sample-level results, MTBF/MTTR metrics, failures, customer returns, environmental tests, compliance, and a composite reliability score per product.</p>
+            <table class="data" style="margin-top: 10px;">
+                <tr><th>Table</th><th>Role</th></tr>
+                <tr><td><span class="mono">test_specifications</span></td><td>Per-product test definitions</td></tr>
+                <tr><td><span class="mono">test_runs</span></td><td>Execution of test specs</td></tr>
+                <tr><td><span class="mono">test_results</span></td><td>Sample-level pass/fail</td></tr>
+                <tr><td><span class="mono">reliability_metrics</span></td><td>MTBF, MTTR, FIT, failure rate by quarter</td></tr>
+                <tr><td><span class="mono">failures</span></td><td>Failure records w/ root cause</td></tr>
+                <tr><td><span class="mono">customer_returns</span></td><td>RMAs linked to product + account</td></tr>
+                <tr><td><span class="mono">environmental_tests</span></td><td>Thermal, vibration, HAST, etc.</td></tr>
+                <tr><td><span class="mono">compliance_records</span></td><td>Certifications · UL · CE · AEC-Q100…</td></tr>
+                <tr><td><span class="mono">reliability_scores</span></td><td>Composite 0-100 score + grade</td></tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Integration model -->
+<div class="card" style="margin-bottom: 22px;">
+    <div class="card-header">
+        <div class="card-title">🔗 Cross-system integration keys</div>
+        <div class="card-eyebrow">Joins</div>
+    </div>
+    <div class="card-body">
+        <p style="color: var(--text-secondary); margin-bottom: 10px;">
+            Three keys glue everything together — exactly as the PDF integration overview specifies.
+        </p>
+        <pre class="code">
+CRM accounts.id     ─────► ERP customers.external_account_id
+                    ─────► QA failures.external_account_id
+                    ─────► QA customer_returns.external_account_id
+
+CRM products.id     ─────► ERP items.external_product_id
+                    ─────► QA test_specifications.external_product_id
+                    ─────► QA reliability_metrics.external_product_id
+                    ─────► QA customer_returns.external_product_id
+                    ─────► QA reliability_scores.external_product_id
+
+CRM quotes.id      ◄─────► ERP sales_orders.external_quote_id
+ERP invoices       ─────► CRM quote_revenue_sync (revenue back-sync)
+QA reliability_scores ─► CRM reliability_insights_sync (insight back-sync)
+        </pre>
+    </div>
+</div>
+
+<!-- Use cases mapped to tools -->
+<div class="card" style="margin-bottom: 22px;">
+    <div class="card-header">
+        <div class="card-title">🎯 The 8 PDF use cases — and which tools answer them</div>
+        <div class="card-eyebrow">Mapping</div>
+    </div>
+    <div class="card-body">
+        <table class="data">
+            <tr><th>#</th><th>Audience</th><th>Question</th><th>Primary tool / chain</th></tr>
+            <tr><td>1</td><td><span class="pill info">Executive</span></td><td>Top 10 key accounts</td><td><span class="mono">analytics_top_key_accounts</span></td></tr>
+            <tr><td>2</td><td><span class="pill info">Executive</span></td><td>Q1 revenue change YoY</td><td><span class="mono">analytics_revenue_pattern_change</span></td></tr>
+            <tr><td>3</td><td><span class="pill info">Executive</span></td><td>Quote→revenue conversion</td><td><span class="mono">analytics_quote_to_revenue_conversion</span></td></tr>
+            <tr><td>4</td><td><span class="pill info">Executive</span></td><td>Sales Quarterly Update</td><td><span class="mono">analytics_quarterly_executive_update</span></td></tr>
+            <tr><td>5</td><td><span class="pill warning">Sales</span></td><td>Best product for design</td><td><span class="mono">analytics_recommend_product_for_customer_project</span></td></tr>
+            <tr><td>6</td><td><span class="pill warning">Sales</span></td><td>Reliability report for product</td><td><span class="mono">crm_search_products</span> → <span class="mono">qa_get_product_reliability_report</span></td></tr>
+            <tr><td>7</td><td><span class="pill warning">Sales</span></td><td>Returns increase for product</td><td><span class="mono">analytics_returns_increase_for_product</span></td></tr>
+            <tr><td>8</td><td><span class="pill warning">Sales</span></td><td>Order booking patterns</td><td><span class="mono">analytics_order_booking_patterns_by_account_name</span></td></tr>
+        </table>
+    </div>
+</div>
+
+<!-- Live table inventory -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">📊 Live table inventory</div>
+        <div class="card-eyebrow">Click to expand columns + preview</div>
+    </div>
+    <div class="card-body" id="db-tables"></div>
+</div>
+
+<script src="/static/js/data_model.js"></script>
+{% endblock %}

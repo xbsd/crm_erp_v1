@@ -16,9 +16,10 @@
 <img alt="Python" src="https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white">
 <img alt="MCP" src="https://img.shields.io/badge/MCP-1.27-FF6F00?style=flat-square">
 <img alt="Claude" src="https://img.shields.io/badge/Claude-Sonnet%204.5-D97757?style=flat-square">
+<img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-0.118-009688?style=flat-square&logo=fastapi&logoColor=white">
 <img alt="SQLite" src="https://img.shields.io/badge/SQLite-3-003B57?style=flat-square&logo=sqlite&logoColor=white">
-<img alt="Streamlit" src="https://img.shields.io/badge/Streamlit-1.32-FF4B4B?style=flat-square&logo=streamlit&logoColor=white">
 <img alt="Plotly" src="https://img.shields.io/badge/Plotly-5.20-3F4F75?style=flat-square&logo=plotly&logoColor=white">
+<img alt="WebSockets" src="https://img.shields.io/badge/WebSockets-live%20trace-4f46e5?style=flat-square">
 </p>
 
 </div>
@@ -53,7 +54,7 @@ The data model and use cases come directly from the requirements PDF (Lead → A
 | 7 | 💼 Sales | Customer returns increase for this product? | `analytics_returns_increase_for_product` |
 | 8 | 💼 Sales | Order booking patterns for my account. | `analytics_order_booking_patterns_by_account_name` |
 
-All 8 questions are wired up as one-click examples in the Streamlit UI and in the CLI demo.
+All 8 questions are wired up as one-click chips in the web UI — and pass the automated QA harness (`scripts/qa_use_cases.py`) end-to-end.
 
 ---
 
@@ -61,25 +62,111 @@ All 8 questions are wired up as one-click examples in the Streamlit UI and in th
 
 ```bash
 # 1. Install
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
 # 2. Build the three databases and populate them with ~2.5 years of synthetic data
 python databases/init_databases.py
 python data_generation/generate_data.py
 
-# 3. Render charts + the Sales Quarterly Update .pptx
+# 3. Render charts + the Sales Quarterly Update .pptx (optional)
 python scripts/generate_outputs.py
 
-# 4. Set your Anthropic key
-export ANTHROPIC_API_KEY=sk-ant-...
+# 4. Make sure your Anthropic key is reachable.
+#    The web app auto-loads from ~/.env first, then ./.env (project local) —
+#    no `export` needed if either file already has ANTHROPIC_API_KEY=…
 
-# 5. Run the demo in your preferred mode:
-python scripts/demo_cli.py               # interactive menu, rich CLI
-streamlit run ui/streamlit_app.py        # web UI with sidebar shortcuts
-python tests/run_all_use_cases.py        # all 8 questions in one go
+# 5. Launch the executive web app
+python scripts/run_webapp.py --port 8000
+open http://127.0.0.1:8000
 ```
 
-That's it — the agent will spawn the four MCP servers as subprocesses on demand.
+That's it — the agent spawns the four MCP servers as stdio subprocesses on first request.
+
+Alternative run modes:
+
+```bash
+python scripts/qa_use_cases.py     # end-to-end QA harness — all 8 PDF questions
+python scripts/demo_cli.py         # Rich-formatted CLI demo
+```
+
+---
+
+## 🖥️ Executive AI Workbench (FastAPI web app)
+
+A professional, executive-grade web application — seven pages, dark/light themes, and a live WebSocket trace that makes the agent-to-agent communication visible.
+
+### 📊 Executive Dashboard
+
+Cross-system snapshot: revenue KPIs with YoY delta, recognized-revenue trend, pipeline funnel, top key accounts, industry mix, YoY movers, reliability watch-list, AR aging.
+
+![Executive Dashboard](docs/images/ui_dashboard.png)
+
+### 🤖 AI Assistant — with Live Agent Trace
+
+This is the centerpiece. Ask anything across CRM + ERP + QA, and the right-hand **Live Agent Trace** panel streams every step of the orchestration over a WebSocket: planning text from Claude, each tool call with its server label and JSON args, the result preview, token counts, and timing. Model selector (Sonnet 4.5 / Opus 4.7 / Haiku 4.5), persona switcher, suggested-question chips, and reset.
+
+![AI Assistant with live trace](docs/images/ui_assistant_trace.png)
+
+> The screenshot above shows use case #6 in flight — the agent chained **5 tool calls across CRM and QA** to assemble a reliability report. Every hop is timestamped and labeled by server.
+
+### 👥 Customer 360
+
+Pick an account → see CRM + ERP + QA together. Hero card with key-account flag and revenue, KPI strip (open pipeline, lifetime closed-won, quotes accepted, returns), booking-pattern chart by quarter, open opportunities, quotes, and recent orders.
+
+![Customer 360](docs/images/ui_customer360.png)
+
+### 🔬 Product Reliability Hub
+
+Per-product reliability score (color-coded by grade), MTBF / failure-rate dual-axis trend, failure-mode distribution, return reasons, compliance status with expiry pills.
+
+![Product Reliability](docs/images/ui_reliability.png)
+
+### 🗂️ Data Model & System Map
+
+A built-in documentation page mapping the PDF data model to the three SQLite schemas — entity by entity, cross-system integration key by key, use case by tool. Live table inventory with row counts and on-demand sample rows.
+
+![Data Model](docs/images/ui_data_model.png)
+
+### 🔧 Tool Catalog
+
+All 33 MCP tools grouped by server with color-coded headers, search/filter, JSON-Schema-derived input forms, and a "Try it" invoker that calls the tool live and shows the raw JSON response.
+
+![Tool Catalog](docs/images/ui_catalog.png)
+
+### ⚙️ System Health
+
+Four MCP-server status cards with tool counts, Anthropic runtime configuration (API key, model, total tools), per-database table inventory with column types.
+
+![System Health](docs/images/ui_system_health.png)
+
+### Dark theme
+
+One-click toggle, persisted in `localStorage`. Every chart, table, pill, and KPI accent respects the theme.
+
+![Executive Dashboard — dark](docs/images/ui_dashboard_dark.png)
+
+### Design system
+
+Custom CSS layer with design tokens for color, spacing, typography, and shadows. Server identity (**CRM = blue · ERP = green · QA = purple · Analytics = orange**) is used consistently across pills, KPI accents, section headers, and timeline event markers in the live trace. KPI cards carry a 3 px accent stripe and uppercase eyebrow label. Markdown answers render with full tables, code, and links.
+
+```
+webapp/
+├── main.py                 # FastAPI app, lifespan-managed MCP client
+├── env_loader.py           # Auto-loads ~/.env then ./.env on startup
+├── agent_runner.py         # Streams agent events to WebSocket subscribers
+├── api/
+│   ├── routes.py           # Server-rendered page routes
+│   ├── data.py             # REST endpoints for dashboards & manual tool invocation
+│   └── ws.py               # /ws/agent — live agent trace WebSocket
+├── templates/              # Jinja2 templates (base + 7 pages)
+└── static/
+    ├── css/theme.css       # Design tokens + components + dark mode
+    ├── css/assistant.css   # Chat thread + agent-trace timeline
+    └── js/*                # util · theme · per-page rendering
+```
+
+No build step. No JS framework. Plotly via CDN, custom CSS, vanilla JS.
 
 ---
 
@@ -140,67 +227,6 @@ Plus a downloadable **9-slide Sales Quarterly Update PowerPoint** (`outputs/sale
 
 ---
 
-## 🖥️ Enterprise AI Workbench (Streamlit UI)
-
-Six-page application with a custom design system, live agent orchestration, and drill-down views.
-
-### 📊 Executive Dashboard
-
-KPI strip, top-account ranking, quarterly revenue trend, industry mix, pipeline funnel, top movers, narrative insight cards, and a reliability watch-list — all on one screen with a persona switcher.
-
-![Executive Dashboard](docs/images/ui_dashboard.png)
-
-### 🤖 AI Assistant
-
-Multi-turn conversational interface. Per-conversation history in the sidebar, persona switcher, model selector (Sonnet 4.5 / Opus 4.7 / Haiku 4.5), suggested prompts filtered by persona, live tool-call streaming inside `st.status`, right-panel "Conversation insights" with server pills + sequenced tool trace + suggested follow-ups, and "online" status indicators for each of the four MCP servers in the header.
-
-![AI Assistant](docs/images/ui_assistant.png)
-
-### 👥 Customer 360
-
-Pick an account → see CRM + ERP + QA together. Hero card with avatar, key-account flag, and inline KPIs; tabs for Overview / CRM (opportunities + quotes) / ERP (orders + invoices + AR aging) / QA (returns) / Ask AI; booking-pattern chart; contact list; "Ask AI" deep-links that auto-open the Assistant with a pre-filled prompt.
-
-![Customer 360](docs/images/ui_customer360.png)
-
-### 🔬 Product Reliability Hub
-
-Per-product circular reliability score (color-coded by grade), MTBF / failure-rate dual-axis trend, failure-mode distribution, returns-by-reason ranking, affected accounts table, compliance status with expiry pills, qualification-testing table. Sidebar shows a watch-list of products below 75. CTA generates a one-page reliability briefing via the AI Assistant.
-
-![Product Reliability](docs/images/ui_reliability.png)
-
-### 🔧 Tool Catalog
-
-All 33 MCP tools grouped by server with color-coded headers and search/filter. Each tool expands to show its description, JSON-Schema-derived input table, and a built-in "Try it" form so you can invoke any tool manually with form-validated inputs and inspect the raw JSON response.
-
-![Tool Catalog](docs/images/ui_catalog.png)
-
-### ⚙️ System Health
-
-Four MCP-server status cards with row-count badges, per-database expandable table-row inventory with charts, Anthropic runtime configuration (model, max iterations, API key status), and a live session-scoped agent activity log.
-
-![System Health](docs/images/ui_system_health.png)
-
-### Design system
-
-Custom CSS layer with design tokens for color, spacing, and typography. Server-color identity (CRM = blue, ERP = green, QA = purple, Analytics = orange) is used consistently across tool cards, status strips, and section headers. KPI cards use a 4 px accent stripe and uppercase eyebrow labels. Status pills carry a colored dot and dimmed background. Dataframes, expanders, tabs, and chat bubbles are all themed to match.
-
-```
-ui/
-├── streamlit_app.py        # entry — st.navigation() router
-├── theme.py                # design tokens + global CSS injection
-├── widgets.py              # kpi_card, tool_call_card, status_pill, account_card, ...
-├── data_access.py          # cached, direct (non-MCP) reads for dashboards
-└── pages/
-    ├── dashboard.py        # Executive Dashboard
-    ├── assistant.py        # Multi-turn AI chat with live tool trace
-    ├── customer360.py      # CRM + ERP + QA per account
-    ├── reliability.py      # Product Reliability Hub
-    ├── catalog.py          # 33-tool browser with "Try it"
-    └── system.py           # MCP server status + DB stats + activity log
-```
-
----
-
 ## 🧭 How the agent routes questions
 
 Heat-map of which MCP server answered each of the 8 use cases (generated from the actual end-to-end run):
@@ -252,7 +278,9 @@ This mirrors how a real Salesforce↔SAP↔Quality-System integration is wired.
 3. For each `tool_use`, the orchestrator routes the call to the right MCP server over stdio, gets JSON back, and feeds it as a `tool_result` block.
 4. Repeat until Claude emits `stop_reason: end_turn`.
 
-Typical run: **1 – 3 iterations, 1 – 5 tool calls, 15 – 35 seconds wallclock**.
+Every step is also pushed to subscribers of the FastAPI `/ws/agent` WebSocket so the UI can render the trace as it happens.
+
+Typical run: **1 – 4 iterations, 1 – 5 tool calls, 13 – 40 seconds wallclock**.
 
 ---
 
@@ -263,11 +291,13 @@ Typical run: **1 – 3 iterations, 1 – 5 tool calls, 15 – 35 seconds wallclo
 | Databases        | SQLite × 3 (CRM / ERP / QA)         | Three isolated systems, zero infra — copies the topology   |
 | MCP servers      | Python + official `mcp` SDK 1.27    | Standard stdio MCP protocol — same wire format as Claude Desktop |
 | Agent            | Anthropic Claude Sonnet 4.5         | Best tool-use model for multi-step reasoning               |
+| Web framework    | FastAPI + Uvicorn + Jinja2          | Async server, WebSocket streaming, no build step           |
+| Frontend         | Vanilla JS + custom CSS tokens + Plotly | Zero JS framework, dark/light theming, executive look     |
 | Synthetic data   | `Faker` + curated industry reference | Real Fortune-1000 names, real semiconductor taxonomy, real test standards |
-| Charts           | Plotly + Kaleido                    | Interactive HTML for the UI, PNG for the deck              |
+| Charts           | Plotly + Kaleido                    | Interactive HTML in the UI, PNG for the deck               |
 | Presentations    | `python-pptx`                       | 16:9 executive deck, programmatically built                |
-| Web UI           | Streamlit                           | One file, zero JS, instant demo                            |
 | CLI              | Rich                                | Live tool-call streaming with colors and tables            |
+| Browser testing  | Playwright                          | UI smoke tests + agent-trace verification screenshots      |
 
 ---
 
@@ -275,15 +305,17 @@ Typical run: **1 – 3 iterations, 1 – 5 tool calls, 15 – 35 seconds wallclo
 
 | Database | Tables | Rows (approx) |
 |----------|--------|---------------|
-| 🟦 CRM   | 11 | ~14,000 — 92 accounts (25 key), 132 products (15 flagged problematic), 563 leads, 2,048 opportunities, 2,975 quotes, 7,435 line items |
-| 🟩 ERP   | 8  | ~5,000 — 92 customers, 132 items, 860 sales orders, 850 invoices, 1,939 revenue rows, GL entries, payments |
-| 🟪 QA    | 9  | ~80,000 — 630 test specs, 2,481 test runs, **74,430 sample-level test results**, 1,320 reliability metrics, 785 failures, 452 customer returns |
+| 🟦 CRM   | 11 | ~14,000 — 92 accounts (25 key), 132 products (15 flagged problematic), 563 leads, 1,966 opportunities, 2,856 quotes, 7,137 line items |
+| 🟩 ERP   | 9  | ~10,000 — 92 customers, 132 items, 776 sales orders, 756 invoices, 1,763 revenue rows, GL entries, payments |
+| 🟪 QA    | 9  | ~83,000 — 635 test specs, 2,514 test runs, **75,420 sample-level test results**, 1,320 reliability metrics, 863 failures, 552 customer returns |
 
 **Time window:** `2024-01-01 → 2026-05-15` (today).
 
 **Calibration:** Q1-25 vs Q1-26 deltas are large enough to surface real changes; account revenue follows a Pareto distribution with the top 10 key accounts dominating; ~12 % of products are intentionally given elevated failure rates so the reliability and returns questions return interesting results.
 
 **Realism:** account names are real publicly-listed companies (Tesla, Lockheed Martin, Bosch, Medtronic…); product categories follow standard semiconductor taxonomy (DC-DC converters, Hall sensors, AEC-Q100 MCUs, SiC MOSFETs…); test standards are real (JESD22-A108, MIL-STD-883, AEC-Q100); failure modes are textbook FMEA.
+
+A full schema-to-PDF mapping is in `docs/DATA_MODEL.md` — and rendered live in-app at **`/data-model`**.
 
 ---
 
@@ -310,16 +342,25 @@ crm_erp_v1/
 │   ├── orchestrator.py              # Anthropic Claude + tool-use loop
 │   ├── visualizations.py            # Plotly charts (PNG + HTML)
 │   └── presentation.py              # python-pptx executive deck
-├── ui/streamlit_app.py              # Web demo
+├── webapp/                          # ★ FastAPI executive UI (current)
+│   ├── main.py                      # FastAPI app + lifespan-managed MCP client
+│   ├── env_loader.py                # Auto-loads ~/.env then ./.env
+│   ├── agent_runner.py              # Streams every event to WebSocket subscribers
+│   ├── api/{routes,data,ws}.py      # Pages · REST data · WS agent stream
+│   ├── templates/*.html             # Base + 7 page templates
+│   └── static/{css,js}/             # Design tokens + per-page UI scripts
+├── ui/                              # Legacy Streamlit prototype (kept for reference)
 ├── scripts/
+│   ├── run_webapp.py                # ★ Start the FastAPI app
+│   ├── qa_use_cases.py              # Automated QA — runs all 8 PDF questions
+│   ├── qa_smoke.py                  # Playwright UI smoke + screenshots
 │   ├── demo_cli.py                  # Rich-formatted CLI demo
-│   ├── generate_outputs.py          # Render all charts + .pptx
-│   ├── make_hero_image.py           # README hero diagram
-│   └── make_routing_image.py        # README routing heat-map
+│   └── generate_outputs.py          # Render all charts + .pptx
 ├── tests/
-│   ├── use_cases.py                 # The 8 PDF questions as prompts
-│   └── run_all_use_cases.py         # Run all 8 end-to-end, save outputs
-├── docs/images/                     # README assets (committed)
+│   └── use_cases.py                 # The 8 PDF questions as prompts
+├── docs/
+│   ├── DATA_MODEL.md                # Schema-to-PDF mapping
+│   └── images/                      # README + in-app assets
 └── outputs/                         # Generated charts + .pptx (gitignored)
 ```
 
@@ -327,7 +368,24 @@ crm_erp_v1/
 
 ## ▶️ Run modes
 
-### 1. CLI demo
+### 1. Executive AI Workbench (recommended)
+
+```bash
+python scripts/run_webapp.py --port 8000
+open http://127.0.0.1:8000
+```
+
+### 2. End-to-end QA harness
+
+```bash
+python scripts/qa_use_cases.py
+# → outputs/qa_use_case_runs.md   (human-readable transcript)
+# → outputs/qa_use_case_runs.json (structured trace per question)
+```
+
+Runs all 8 PDF questions through the live agent over WebSocket and verifies each completes with a non-empty answer and at least one tool call. Recent run: **8/8 passed**, 190.6s total, 12 tool calls.
+
+### 3. CLI demo
 
 ```bash
 python scripts/demo_cli.py              # interactive menu of the 8 questions
@@ -335,35 +393,15 @@ python scripts/demo_cli.py 4            # run use case #4 directly
 python scripts/demo_cli.py "Show me Lockheed Martin's order trend by quarter"
 ```
 
-You get live, color-coded tool-call streaming:
+You get live, color-coded tool-call streaming in the terminal.
 
-```
-  → Analytics (cross-system)::analytics_order_booking_patterns_by_account_name(account_name='Lockheed Martin', ...)
-    ✓ analytics_order_booking_patterns_by_account_name returned in 0.04s
-  → Salesforce CRM::crm_get_account_summary(account_name='Lockheed Martin')
-    ✓ crm_get_account_summary returned in 0.01s
-  → Salesforce CRM::crm_list_opportunities(account_id='0010015LBS7KA1P48IL', stage=None, ...)
-    ✓ crm_list_opportunities returned in 0.01s
-───── Answer ─────
-## Lockheed Martin Analysis: Q1 2026 Revenue Decline
-...
-```
-
-### 2. Streamlit web UI
+### 4. Legacy Streamlit UI (kept for reference)
 
 ```bash
 streamlit run ui/streamlit_app.py
 ```
 
-Sidebar buttons for all 8 PDF questions, a custom-question text area, live tool-call expanders, inline charts, and a download button for the quarterly deck.
-
-### 3. Full test harness
-
-```bash
-python tests/run_all_use_cases.py
-# → outputs/use_case_runs.md   (human-readable transcript of all 8 questions)
-# → outputs/use_case_runs.json (full trace incl. arguments and previews)
-```
+The Streamlit prototype is still in the repo but the FastAPI app is the supported interface going forward.
 
 ---
 
@@ -392,13 +430,6 @@ Iter 3  →  (final answer)
 > - Open pipeline: $21.38M
 > - Historical closed-won: $157.14M lifetime
 > - Total opportunities: 56
->
-> ### Open Pipeline Breakdown (sorted by stage maturity)
-> | Opportunity | Stage | Amount | Probability | Close Date | Family |
-> |---|---|---|---|---|---|
-> | MCU Design Win | Negotiation | $1.34M | 75 % | Nov 2026 | MCU |
-> | MCU New Project | Proposal | $1.88M | 50 % | Sep 2026 | MCU |
-> | …  | …  | …  | …  | …  | …  |
 >
 > **Weighted pipeline value: ~$7.6M**
 
@@ -471,7 +502,7 @@ The agent picked the right tools, joined data from two systems, and wrote a clea
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | _(required)_ | Claude API key |
+| `ANTHROPIC_API_KEY` | _(required)_ | Claude API key — picked up automatically from `~/.env` or `./.env` |
 | `CRM_DEMO_MODEL` | `claude-sonnet-4-5` | Override the model (e.g. `claude-opus-4-7`) |
 | `ANTHROPIC_BASE_URL` | `https://api.anthropic.com` | Useful for proxies / corp gateways |
 
