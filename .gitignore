@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.env
+.env.local
+.DS_Store
+outputs/*.pptx
+outputs/*.png
+outputs/*.html
+outputs/*.json
+!outputs/.gitkeep
+.pytest_cache/
+.streamlit/secrets.toml
