@@ -56,8 +56,8 @@
             paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
             font: { color: css.getPropertyValue('--text').trim(), family: getComputedStyle(document.body).fontFamily, size: 12 },
             margin: { l: 50, r: 40, t: 10, b: 40 },
-            xaxis: { gridcolor: css.getPropertyValue('--border-subtle').trim(), tickfont: { color: css.getPropertyValue('--text-tertiary').trim() } },
-            yaxis: { gridcolor: css.getPropertyValue('--border-subtle').trim(), tickfont: { color: css.getPropertyValue('--text-tertiary').trim() } },
+            xaxis: { gridcolor: css.getPropertyValue('--border-soft').trim(), tickfont: { color: css.getPropertyValue('--text-faint').trim() } },
+            yaxis: { gridcolor: css.getPropertyValue('--border-soft').trim(), tickfont: { color: css.getPropertyValue('--text-faint').trim() } },
         };
     }
 
@@ -75,7 +75,7 @@
     function renderMTBF(d) {
         const data = (d.metrics_by_quarter || []).slice().reverse();
         const erp = getComputedStyle(document.documentElement).getPropertyValue('--erp').trim();
-        const warn = getComputedStyle(document.documentElement).getPropertyValue('--warning').trim();
+        const warn = getComputedStyle(document.documentElement).getPropertyValue('--warn').trim();
         Plotly.newPlot('chart-mtbf', [
             { type: 'scatter', mode: 'lines+markers', name: 'MTBF (hrs)', x: data.map(r => r.period_label), y: data.map(r => r.mtbf_hours), yaxis: 'y', line: { color: erp, width: 2 } },
             { type: 'scatter', mode: 'lines+markers', name: 'Failure rate (ppm)', x: data.map(r => r.period_label), y: data.map(r => r.failure_rate_ppm), yaxis: 'y2', line: { color: warn, width: 2 } },

@@ -36,7 +36,7 @@
         const flag = s.is_key_account ? '<span class="pill warning">★ Key account</span>' : '';
         heroBody.innerHTML = `
             <div style="display: flex; align-items: center; gap: 18px;">
-                <div style="width: 64px; height: 64px; border-radius: 14px; background: linear-gradient(135deg, var(--brand) 0%, var(--qa) 100%); display: grid; place-items: center; color: white; font-weight: 700; font-size: 22px;">${(s.name||'?').slice(0,2).toUpperCase()}</div>
+                <div style="width: 64px; height: 64px; border-radius: 14px; background: linear-gradient(135deg, var(--accent) 0%, var(--qa) 100%); display: grid; place-items: center; color: white; font-weight: 700; font-size: 22px;">${(s.name||'?').slice(0,2).toUpperCase()}</div>
                 <div style="flex: 1;">
                     <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.015em;">${s.name}</div>
                     <div style="display:flex; gap: 6px; margin-top: 6px;">
@@ -46,7 +46,7 @@
                         ${flag}
                     </div>
                 </div>
-                <div style="display:flex; gap: 22px; align-items: center; font-size: 12px; color: var(--text-tertiary);">
+                <div style="display:flex; gap: 22px; align-items: center; font-size: 12px; color: var(--text-faint);">
                     <div><div>Annual revenue</div><div style="font-size:18px; font-weight:600; color: var(--text);">${U.fmt.money(s.annual_revenue)}</div></div>
                     <div><div>Employees</div><div style="font-size:18px; font-weight:600; color: var(--text);">${U.fmt.num(s.employee_count)}</div></div>
                 </div>
@@ -76,8 +76,8 @@
         const css = getComputedStyle(document.documentElement);
         const erpColor = css.getPropertyValue('--erp').trim();
         const text = css.getPropertyValue('--text').trim();
-        const grid = css.getPropertyValue('--border-subtle').trim();
-        const tertiary = css.getPropertyValue('--text-tertiary').trim();
+        const grid = css.getPropertyValue('--border-soft').trim();
+        const tertiary = css.getPropertyValue('--text-faint').trim();
         const data = d.booking_by_quarter || [];
         Plotly.newPlot('chart-booking', [{
             type: 'bar',

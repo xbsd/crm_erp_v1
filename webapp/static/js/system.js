@@ -31,21 +31,21 @@
     inv.innerHTML = '';
     Object.entries(dbs).forEach(([db, info]) => {
         const card = U.el('details', { open: db === 'crm' ? true : null,
-            style: { borderBottom: '1px solid var(--border-subtle)', padding: '10px 0' }});
+            style: { borderBottom: '1px solid var(--border-soft)', padding: '10px 0' }});
         const sum = U.el('summary', { style: { cursor: 'pointer', display: 'flex', gap: '10px', alignItems: 'center' } },
             U.el('span', { html: U.pill(db.toUpperCase(), U.serverPillClass(db)).outerHTML }),
-            U.el('span', { class: 'mono', style: { color: 'var(--text-tertiary)', fontSize: '12px' } }, info.path),
-            U.el('span', { style: { marginLeft: 'auto', color: 'var(--text-tertiary)' } },
+            U.el('span', { class: 'mono', style: { color: 'var(--text-faint)', fontSize: '12px' } }, info.path),
+            U.el('span', { style: { marginLeft: 'auto', color: 'var(--text-faint)' } },
                 `${info.tables.length} tables · ${info.tables.reduce((a, t) => a + t.row_count, 0).toLocaleString()} rows`),
         );
         card.append(sum);
         info.tables.forEach(t => {
-            const block = U.el('div', { style: { padding: '10px 0 4px', borderTop: '1px dashed var(--border-subtle)', marginTop: '10px' } });
+            const block = U.el('div', { style: { padding: '10px 0 4px', borderTop: '1px dashed var(--border-soft)', marginTop: '10px' } });
             block.append(U.el('div', { style: { fontWeight: 600, marginBottom: '4px' } },
                 `${t.name} `,
-                U.el('span', { style: { color: 'var(--text-tertiary)', fontSize: '12px', marginLeft: '6px' } },
+                U.el('span', { style: { color: 'var(--text-faint)', fontSize: '12px', marginLeft: '6px' } },
                     `${t.row_count.toLocaleString()} rows · ${t.columns.length} columns`)));
-            block.append(U.el('div', { style: { fontSize: '11px', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' } },
+            block.append(U.el('div', { style: { fontSize: '11px', color: 'var(--text-faint)', fontFamily: 'var(--font-mono, JetBrains Mono, ui-monospace)' } },
                 t.columns.map(c => `${c.pk ? '★' : ''}${c.name}: ${c.type}${c.notnull ? '*' : ''}`).join(' · ')));
             card.append(block);
         });

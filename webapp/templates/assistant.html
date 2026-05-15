@@ -15,17 +15,17 @@
     </div>
     <div class="assistant-toolbar">
         <select id="model-select" class="select" title="Model">
-            <option value="claude-sonnet-4-5">Sonnet 4.5</option>
-            <option value="claude-opus-4-7">Opus 4.7</option>
-            <option value="claude-haiku-4-5-20251001">Haiku 4.5</option>
+            <option value="claude-sonnet-4-5">SONNET 4.5</option>
+            <option value="claude-opus-4-7">OPUS 4.7</option>
+            <option value="claude-haiku-4-5-20251001">HAIKU 4.5</option>
         </select>
         <select id="persona-select" class="select" title="Persona">
-            <option>Executive</option>
-            <option>VP Sales</option>
-            <option>Sales Manager</option>
-            <option>Sales Engineer</option>
+            <option>EXECUTIVE</option>
+            <option>VP SALES</option>
+            <option>SALES MANAGER</option>
+            <option>SALES ENGINEER</option>
         </select>
-        <button id="reset-btn" class="btn ghost sm" title="Clear conversation">↺ Reset</button>
+        <button id="reset-btn" class="btn ghost sm" title="Clear conversation">↺ RESET</button>
     </div>
 </div>
 
@@ -34,7 +34,7 @@
     <div class="chat-col">
         <div class="card">
             <div class="card-header">
-                <div class="card-title">💡 Suggested questions from the PDF</div>
+                <div class="card-title"><span class="accent-icon">◆</span> Suggested questions from the PDF</div>
                 <div class="card-eyebrow">8 use cases</div>
             </div>
             <div class="card-body">
@@ -59,7 +59,7 @@
             <textarea id="composer-input" placeholder="Ask the agent — e.g. 'Who are my top 10 key accounts?'" rows="2"></textarea>
             <div class="composer-actions">
                 <button type="submit" class="btn primary" id="send-btn">
-                    <span id="send-label">Send</span>
+                    <span id="send-label">SEND</span>
                 </button>
             </div>
         </form>
@@ -68,19 +68,19 @@
     <!-- Live agent trace panel -->
     <aside class="agent-trace-panel">
         <div class="trace-header">
-            <h3>🔍 Live Agent Trace</h3>
-            <div class="trace-status" id="trace-status">Idle</div>
+            <h3><span class="accent-icon">◐</span> Live Agent Trace</h3>
+            <div class="trace-status" id="trace-status">IDLE</div>
         </div>
         <div class="flow" id="flow-strip">
-            <span class="flow-step">User</span>
+            <span class="flow-step">USER</span>
             <span class="flow-arrow">→</span>
-            <span class="flow-step">Claude Orchestrator</span>
+            <span class="flow-step">CLAUDE</span>
             <span class="flow-arrow">→</span>
-            <span class="flow-step">MCP Servers (4)</span>
+            <span class="flow-step">MCP × 4</span>
             <span class="flow-arrow">→</span>
-            <span class="flow-step">SQLite DBs (3)</span>
+            <span class="flow-step">SQLite × 3</span>
             <span class="flow-arrow">←</span>
-            <span class="flow-step">Final Answer</span>
+            <span class="flow-step">ANSWER</span>
         </div>
         <div class="trace-body" id="trace-body">
             <div class="trace-empty">

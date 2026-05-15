@@ -44,8 +44,9 @@
                 traceBody.innerHTML = '';
                 currentTimeline = U.el('div', { class: 'timeline' });
                 traceBody.append(currentTimeline);
-                appendEvent('run_start', '🚀 Run started', `Model: ${ev.model || ''} · ${ev.tool_count} tools available`, ev.ts);
-                traceStatus.textContent = 'Running…';
+                appendEvent('run_start', '▶ Run started', `Model: ${ev.model || ''} · ${ev.tool_count} tools available`, ev.ts);
+                traceStatus.textContent = 'RUNNING';
+                traceStatus.className = 'trace-status running';
                 break;
             case 'iteration_start':
                 appendEvent('iteration_start', `Iteration ${ev.iteration}`, 'Claude is planning the next step…', ev.ts);
@@ -64,9 +65,10 @@
                 renderFinal(ev);
                 break;
             case 'error':
-                appendEvent('error', '❌ Error', ev.error || 'Agent failed', ev.ts);
+                appendEvent('error', '✗ Error', ev.error || 'Agent failed', ev.ts);
                 setRunning(false);
-                traceStatus.textContent = 'Error';
+                traceStatus.textContent = 'ERROR';
+                traceStatus.className = 'trace-status error';
                 break;
         }
         scrollTrace();
@@ -96,7 +98,7 @@
     }
 
     function renderModelResponse(ev) {
-        let title = `🧠 Claude thinking step ${ev.iteration}`;
+        let title = `↯ Claude · thinking step ${ev.iteration}`;
         const tcp = ev.tool_calls_planned || [];
         const detail = `${U.fmt.secs(ev.duration_s)} · ${ev.tokens?.input || 0} in · ${ev.tokens?.output || 0} out · ${ev.stop_reason}`;
         const e = appendEvent('model_response', title, detail, ev.ts);
@@ -114,9 +116,9 @@
     function renderToolCall(ev) {
         const serverClass = U.serverPillClass(ev.server_name);
         const title = U.el('div', { class: 'event-title' },
-            `🔧 `,
+            `→ `,
             U.el('span', { html: U.pill(ev.server_label, serverClass).outerHTML }),
-            U.el('span', { style: { marginLeft: '6px' } }, ev.tool_name),
+            U.el('span', { class: 'mono', style: { marginLeft: '6px' } }, ev.tool_name),
         );
         const detail = U.el('div', { class: 'event-detail' }, `Iter ${ev.iteration} · args:`);
         const args = U.el('div', { class: 'event-args' }, JSON.stringify(ev.arguments, null, 2));
@@ -129,9 +131,9 @@
     function renderToolResult(ev) {
         const serverClass = U.serverPillClass(ev.server_name);
         const title = U.el('div', { class: 'event-title' },
-            `✓ `,
+            `← `,
             U.el('span', { html: U.pill(ev.server_label, serverClass).outerHTML }),
-            U.el('span', { style: { marginLeft: '6px' } }, ev.tool_name),
+            U.el('span', { class: 'mono', style: { marginLeft: '6px' } }, ev.tool_name),
         );
         const detail = U.el('div', { class: 'event-detail' },
             `${U.fmt.secs(ev.duration_s)} · ${U.fmt.num(ev.result_size)} bytes${ev.error ? ' · ERROR' : ''}`);
@@ -143,17 +145,18 @@
     }
 
     function renderFinal(ev) {
-        appendEvent('final', '✅ Answer produced', `${ev.iterations} iterations · ${U.fmt.secs(ev.duration_s)} · ${toolCallCount} tool calls`, ev.ts);
+        appendEvent('final', '✓ Answer produced', `${ev.iterations} iterations · ${U.fmt.secs(ev.duration_s)} · ${toolCallCount} tool calls`, ev.ts);
         if (currentAssistantBubble) {
             currentAssistantBubble.querySelector('.msg-body').innerHTML = U.markdown(ev.answer);
             currentAssistantBubble.querySelector('.msg-meta-pills').innerHTML = `
-                <span class="pill info">${ev.iterations} iter</span>
-                <span class="pill success">${U.fmt.secs(ev.duration_s)}</span>
-                <span class="pill">${toolCallCount} tool call${toolCallCount === 1 ? '' : 's'}</span>
+                <span class="pill info">${ev.iterations} ITER</span>
+                <span class="pill pos">${U.fmt.secs(ev.duration_s)}</span>
+                <span class="pill">${toolCallCount} TOOL${toolCallCount === 1 ? '' : 'S'}</span>
             `;
         }
         setRunning(false);
-        traceStatus.textContent = `Done · ${U.fmt.secs(ev.duration_s)}`;
+        traceStatus.textContent = `DONE · ${U.fmt.secs(ev.duration_s)}`;
+        traceStatus.className = 'trace-status done';
     }
 
     function scrollTrace() { traceBody.scrollTop = traceBody.scrollHeight; }

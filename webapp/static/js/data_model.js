@@ -12,16 +12,16 @@
 
         info.tables.forEach(t => {
             const det = U.el('details', {
-                style: { borderBottom: '1px solid var(--border-subtle)', padding: '10px 4px' }
+                style: { borderBottom: '1px solid var(--border-soft)', padding: '10px 4px' }
             });
             const sum = U.el('summary', { style: { cursor: 'pointer' } },
                 U.el('span', { class: 'mono', style: { fontWeight: 600 } }, t.name),
-                U.el('span', { style: { color: 'var(--text-tertiary)', marginLeft: '8px', fontSize: '12px' } },
+                U.el('span', { style: { color: 'var(--text-faint)', marginLeft: '8px', fontSize: '12px' } },
                     `${t.row_count.toLocaleString()} rows · ${t.columns.length} columns`));
             det.append(sum);
 
             // Columns
-            const cols = U.el('div', { style: { margin: '8px 0', fontSize: '11.5px', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' } },
+            const cols = U.el('div', { style: { margin: '8px 0', fontSize: '11.5px', color: 'var(--text-faint)', fontFamily: 'var(--font-mono, JetBrains Mono, ui-monospace)' } },
                 t.columns.map(c =>
                     `${c.pk ? '★' : ''}${c.name}<span style="opacity:0.7;">: ${c.type}${c.notnull ? '*' : ''}</span>`,
                 ).join('  ·  '));

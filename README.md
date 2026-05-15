@@ -140,15 +140,20 @@ Four MCP-server status cards with tool counts, Anthropic runtime configuration (
 
 ![System Health](docs/images/ui_system_health.png)
 
-### Dark theme
+### Light theme
 
-One-click toggle, persisted in `localStorage`. Every chart, table, pill, and KPI accent respects the theme.
+One-click toggle, persisted in `localStorage`. The light theme is a McKinsey-deck paper aesthetic: paper-white surfaces, navy-ink (#051c2c) typography, electric-blue accent.
 
-![Executive Dashboard — dark](docs/images/ui_dashboard_dark.png)
+![Executive Dashboard — light theme](docs/images/ui_dashboard_light.png)
 
 ### Design system
 
-Custom CSS layer with design tokens for color, spacing, typography, and shadows. Server identity (**CRM = blue · ERP = green · QA = purple · Analytics = orange**) is used consistently across pills, KPI accents, section headers, and timeline event markers in the live trace. KPI cards carry a 3 px accent stripe and uppercase eyebrow label. Markdown answers render with full tables, code, and links.
+A Kairos-inspired dual-theme system:
+
+- **Dark** — Bloomberg-terminal: near-pure black canvas (#000), amber signature accent (#ffa500), saturated finance green / red. Trading-floor at 4 AM.
+- **Light** — McKinsey-deck: paper-white surfaces, navy-ink typography (#051c2c), electric-blue accent (#2251ff), institutional green / red. Boardroom-PDF clarity.
+
+Both themes share the same token namespace and component vocabulary. Type: **Inter** for prose, **JetBrains Mono** for all numerics, codes, and chrome — with tabular-num spacing so columns of numbers line up cleanly. Server identity (**CRM · ERP · QA · Analytics**) is encoded as small colored mono pills used consistently across the tool catalog, the agent trace, and the data-model docs. The wordmark uses an animated burnt-orange "time sweep" gradient that crosses the letters every 8 s — a subtle nod to live data flow.
 
 ```
 webapp/

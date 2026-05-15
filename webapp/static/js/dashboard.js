@@ -53,11 +53,11 @@
         .filter(r => r.period && r.amount != null);
     const css = getComputedStyle(document.documentElement);
     const palette = {
-        bg: css.getPropertyValue('--bg-elevated').trim(),
+        bg: css.getPropertyValue('--surface').trim(),
         text: css.getPropertyValue('--text').trim(),
-        textTertiary: css.getPropertyValue('--text-tertiary').trim(),
-        grid: css.getPropertyValue('--border-subtle').trim(),
-        brand: css.getPropertyValue('--brand').trim(),
+        textTertiary: css.getPropertyValue('--text-faint').trim(),
+        grid: css.getPropertyValue('--border-soft').trim(),
+        brand: css.getPropertyValue('--accent').trim(),
         crm: css.getPropertyValue('--crm').trim(),
         erp: css.getPropertyValue('--erp').trim(),
         qa: css.getPropertyValue('--qa').trim(),
@@ -65,10 +65,10 @@
     };
     const commonLayout = {
         paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
-        font: { family: getComputedStyle(document.body).fontFamily, color: palette.text, size: 12 },
-        margin: { l: 50, r: 20, t: 10, b: 40 },
-        xaxis: { gridcolor: palette.grid, linecolor: palette.grid, zerolinecolor: palette.grid, tickfont: { color: palette.textTertiary } },
-        yaxis: { gridcolor: palette.grid, linecolor: palette.grid, zerolinecolor: palette.grid, tickfont: { color: palette.textTertiary } },
+        font: { family: '"JetBrains Mono", ui-monospace, monospace', color: palette.text, size: 11 },
+        margin: { l: 55, r: 20, t: 10, b: 40 },
+        xaxis: { gridcolor: palette.grid, linecolor: palette.grid, zerolinecolor: palette.grid, tickfont: { color: palette.textTertiary, size: 10 } },
+        yaxis: { gridcolor: palette.grid, linecolor: palette.grid, zerolinecolor: palette.grid, tickfont: { color: palette.textTertiary, size: 10 } },
         showlegend: false,
     };
     Plotly.newPlot('chart-revenue-trend', [{

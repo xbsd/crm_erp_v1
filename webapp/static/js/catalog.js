@@ -33,11 +33,11 @@
 
     function toolRow(t) {
         const row = U.el('details', { style: {
-            borderBottom: '1px solid var(--border-subtle)', padding: '12px 0',
+            borderBottom: '1px solid var(--border-soft)', padding: '12px 0',
         }});
         const summary = U.el('summary', { style: { cursor: 'pointer', userSelect: 'none' } });
         summary.innerHTML = `<span class="mono" style="font-weight:600;">${t.name}</span>
-            <div style="color: var(--text-tertiary); font-size: 12.5px; margin-top: 4px;">${t.description}</div>`;
+            <div style="color: var(--text-faint); font-size: 12.5px; margin-top: 4px;">${t.description}</div>`;
         row.append(summary);
         // Form + try it
         const form = U.el('form', { style: { marginTop: '12px' } });
@@ -63,7 +63,7 @@
         });
         const result = U.el('pre', { class: 'code', style: { display: 'none', marginTop: '12px' } });
         const btn = U.el('button', { class: 'btn primary sm', type: 'submit' }, '▶ Invoke');
-        const status = U.el('span', { style: { marginLeft: '10px', fontSize: '12px', color: 'var(--text-tertiary)' } });
+        const status = U.el('span', { style: { marginLeft: '10px', fontSize: '12px', color: 'var(--text-faint)' } });
         const actionRow = U.el('div', { style: { display: 'flex', alignItems: 'center' } }, btn, status);
         form.append(actionRow);
         form.append(result);

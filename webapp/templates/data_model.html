@@ -9,34 +9,34 @@
         <h1 class="page-title">Data Model & System Map</h1>
         <p class="page-subtitle">How the PDF data model maps to the CRM, ERP, and QA databases, and how every table participates in the eight executive use cases.</p>
     </div>
-    <a href="/system" class="btn">⚙️ Open System Health</a>
+    <a href="/system" class="btn">● Open System Health</a>
 </div>
 
 <!-- The end-to-end process diagram -->
 <div class="card" style="margin-bottom: 22px;">
     <div class="card-header">
-        <div class="card-title">🔄 End-to-end process · Lead → Quote → Order → Invoice → Revenue → Reliability feedback</div>
+        <div class="card-title">↻ End-to-end process · Lead → Quote → Order → Invoice → Revenue → Reliability feedback</div>
         <div class="card-eyebrow">PDF Source</div>
     </div>
     <div class="card-body">
-        <p style="margin-bottom: 14px; color: var(--text-secondary);">The application implements the full life cycle from the PDF: lead generation through revenue recognition,
+        <p style="margin-bottom: 14px; color: var(--text-dim);">The application implements the full life cycle from the PDF: lead generation through revenue recognition,
         plus a quality-and-reliability feedback loop that pushes data back into the CRM as opportunity-level insights.</p>
         <div class="flow" style="border: none; padding: 0; background: transparent; gap: 8px;">
-            <span class="flow-step crm" style="background: var(--crm-tint); color: var(--crm);">1 · Lead capture (CRM)</span>
+            <span class="flow-step crm" style="background: var(--crm-bg); color: var(--crm);">1 · Lead capture (CRM)</span>
             <span class="flow-arrow">→</span>
-            <span class="flow-step crm" style="background: var(--crm-tint); color: var(--crm);">2 · Account mgmt</span>
+            <span class="flow-step crm" style="background: var(--crm-bg); color: var(--crm);">2 · Account mgmt</span>
             <span class="flow-arrow">→</span>
-            <span class="flow-step crm" style="background: var(--crm-tint); color: var(--crm);">3 · Opportunity</span>
+            <span class="flow-step crm" style="background: var(--crm-bg); color: var(--crm);">3 · Opportunity</span>
             <span class="flow-arrow">→</span>
-            <span class="flow-step crm" style="background: var(--crm-tint); color: var(--crm);">4 · Quote</span>
+            <span class="flow-step crm" style="background: var(--crm-bg); color: var(--crm);">4 · Quote</span>
             <span class="flow-arrow">→</span>
-            <span class="flow-step erp" style="background: var(--erp-tint); color: var(--erp);">5 · Sales order (ERP)</span>
+            <span class="flow-step erp" style="background: var(--erp-bg); color: var(--erp);">5 · Sales order (ERP)</span>
             <span class="flow-arrow">→</span>
-            <span class="flow-step erp" style="background: var(--erp-tint); color: var(--erp);">6 · Invoice</span>
+            <span class="flow-step erp" style="background: var(--erp-bg); color: var(--erp);">6 · Invoice</span>
             <span class="flow-arrow">→</span>
-            <span class="flow-step erp" style="background: var(--erp-tint); color: var(--erp);">7 · Revenue → CRM</span>
+            <span class="flow-step erp" style="background: var(--erp-bg); color: var(--erp);">7 · Revenue → CRM</span>
             <span class="flow-arrow">⤴</span>
-            <span class="flow-step qa" style="background: var(--qa-tint); color: var(--qa);">8 · QA reliability feedback</span>
+            <span class="flow-step qa" style="background: var(--qa-bg); color: var(--qa);">8 · QA reliability feedback</span>
         </div>
     </div>
 </div>
@@ -45,11 +45,11 @@
 <div class="grid k3 g20" style="margin-bottom: 22px;">
     <div class="card">
         <div class="card-header">
-            <div class="card-title">🟦 Salesforce CRM (Front office)</div>
+            <div class="card-title">■ Salesforce CRM (Front office)</div>
             <div class="card-eyebrow">11 tables</div>
         </div>
         <div class="card-body">
-            <p style="color: var(--text-secondary);">Owns the customer-facing life cycle: leads, accounts, contacts, opportunities, products & pricebook, quotes & line items. Two sync tables receive feedback from ERP (revenue) and QA (reliability insights).</p>
+            <p style="color: var(--text-dim);">Owns the customer-facing life cycle: leads, accounts, contacts, opportunities, products & pricebook, quotes & line items. Two sync tables receive feedback from ERP (revenue) and QA (reliability insights).</p>
             <table class="data" style="margin-top: 10px;">
                 <tr><th>Table</th><th>Role</th></tr>
                 <tr><td><span class="mono">users</span></td><td>Sales reps & managers (Salesforce User)</td></tr>
@@ -69,11 +69,11 @@
 
     <div class="card">
         <div class="card-header">
-            <div class="card-title">🟩 ERP System (Back office)</div>
+            <div class="card-title">■ ERP System (Back office)</div>
             <div class="card-eyebrow">8 tables</div>
         </div>
         <div class="card-body">
-            <p style="color: var(--text-secondary);">Owns transactional & financial state: customer master, item master, sales orders, invoices, payments, GL, and recognized revenue. Integration keys link every row back to the CRM.</p>
+            <p style="color: var(--text-dim);">Owns transactional & financial state: customer master, item master, sales orders, invoices, payments, GL, and recognized revenue. Integration keys link every row back to the CRM.</p>
             <table class="data" style="margin-top: 10px;">
                 <tr><th>Table</th><th>Role</th></tr>
                 <tr><td><span class="mono">customers</span></td><td>ERP customer master · ext_account_id ↔ CRM</td></tr>
@@ -91,11 +91,11 @@
 
     <div class="card">
         <div class="card-header">
-            <div class="card-title">🟪 QA / Reliability</div>
+            <div class="card-title">■ QA / Reliability</div>
             <div class="card-eyebrow">9 tables</div>
         </div>
         <div class="card-body">
-            <p style="color: var(--text-secondary);">Owns reliability data: test specs and runs, sample-level results, MTBF/MTTR metrics, failures, customer returns, environmental tests, compliance, and a composite reliability score per product.</p>
+            <p style="color: var(--text-dim);">Owns reliability data: test specs and runs, sample-level results, MTBF/MTTR metrics, failures, customer returns, environmental tests, compliance, and a composite reliability score per product.</p>
             <table class="data" style="margin-top: 10px;">
                 <tr><th>Table</th><th>Role</th></tr>
                 <tr><td><span class="mono">test_specifications</span></td><td>Per-product test definitions</td></tr>
@@ -119,7 +119,7 @@
         <div class="card-eyebrow">Joins</div>
     </div>
     <div class="card-body">
-        <p style="color: var(--text-secondary); margin-bottom: 10px;">
+        <p style="color: var(--text-dim); margin-bottom: 10px;">
             Three keys glue everything together — exactly as the PDF integration overview specifies.
         </p>
         <pre class="code">
@@ -143,7 +143,7 @@ QA reliability_scores ─► CRM reliability_insights_sync (insight back-sync)
 <!-- Use cases mapped to tools -->
 <div class="card" style="margin-bottom: 22px;">
     <div class="card-header">
-        <div class="card-title">🎯 The 8 PDF use cases — and which tools answer them</div>
+        <div class="card-title">◎ The 8 PDF use cases — and which tools answer them</div>
         <div class="card-eyebrow">Mapping</div>
     </div>
     <div class="card-body">
@@ -164,7 +164,7 @@ QA reliability_scores ─► CRM reliability_insights_sync (insight back-sync)
 <!-- Live table inventory -->
 <div class="card">
     <div class="card-header">
-        <div class="card-title">📊 Live table inventory</div>
+        <div class="card-title">▣ Live table inventory</div>
         <div class="card-eyebrow">Click to expand columns + preview</div>
     </div>
     <div class="card-body" id="db-tables"></div>
