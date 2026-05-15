@@ -795,7 +795,9 @@ def generate_erp(
                 if r < 0.50:
                     amount_paid = total
                     status = "Paid"
-                    last_payment_date = (inv_date + timedelta(days=random.randint(5, min(days, max(1, (today - inv_date).days))))).isoformat()
+                    upper = min(days, max(1, (today - inv_date).days))
+                    lower = min(5, upper)
+                    last_payment_date = (inv_date + timedelta(days=random.randint(lower, upper))).isoformat()
                 else:
                     amount_paid = 0.0
                     status = "Posted"

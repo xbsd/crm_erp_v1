@@ -185,17 +185,57 @@ def register_data_routes(app: FastAPI) -> None:
         return result
 
     @app.get("/api/table/{database}/{table}")
-    async def table_sample(database: str, table: str, limit: int = 50):
+    async def table_sample(
+        database: str,
+        table: str,
+        limit: int = 50,
+        offset: int = 0,
+        q: str | None = None,
+        col: str | None = None,
+    ):
+        """Sample rows from a table with optional column-substring search.
+
+        - `limit`  / `offset`  → pagination
+        - `q`      → case-insensitive substring to match
+        - `col`    → restrict the search to one column (otherwise all TEXT-ish columns)
+        """
         path_map = {"crm": CRM_DB, "erp": ERP_DB, "qa": QA_DB}
         if database not in path_map:
             raise HTTPException(404, "Unknown database")
         conn = sqlite3.connect(path_map[database]); conn.row_factory = sqlite3.Row
-        # Sanitize: ensure table exists
+        # Sanitize table name against the schema
         if not conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name = ?", (table,)).fetchone():
             conn.close(); raise HTTPException(404, "Unknown table")
-        rows = [dict(r) for r in conn.execute(f"SELECT * FROM {table} LIMIT {int(limit)}").fetchall()]
+
+        cols = [c["name"] for c in conn.execute(f"PRAGMA table_info({table})").fetchall()]
+        where_sql = ""
+        params: list = []
+        if q:
+            search_cols = [col] if col and col in cols else cols
+            clauses = [f"CAST({c} AS TEXT) LIKE ?" for c in search_cols]
+            where_sql = " WHERE " + " OR ".join(clauses)
+            params.extend([f"%{q}%"] * len(search_cols))
+
+        total = conn.execute(
+            f"SELECT COUNT(*) FROM {table}{where_sql}", params
+        ).fetchone()[0]
+        rows = [
+            dict(r)
+            for r in conn.execute(
+                f"SELECT * FROM {table}{where_sql} LIMIT ? OFFSET ?",
+                params + [int(limit), int(offset)],
+            ).fetchall()
+        ]
         conn.close()
-        return {"row_count": len(rows), "rows": rows}
+        return {
+            "table": table, "database": database,
+            "columns": cols,
+            "total_rows": total,
+            "row_count": len(rows),
+            "limit": int(limit), "offset": int(offset),
+            "q": q, "col": col,
+            "rows": rows,
+        }
 
     # -----------------------------------------------------------------------
     # Tool catalog & manual invocation

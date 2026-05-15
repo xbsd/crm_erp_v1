@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}DB Browser · Enterprise AI Workbench{% endblock %}
+{% block breadcrumb %}Operations · <strong>DB Browser</strong>{% endblock %}
+
+{% block main %}
+<div class="page-header">
+    <div>
+        <div class="page-eyebrow">3 databases · raw SQLite rows</div>
+        <h1 class="page-title">Database Browser</h1>
+        <p class="page-subtitle">Pick a database and a table to inspect raw rows. Read-only — paginated, with column-aware substring search.</p>
+    </div>
+</div>
+
+<div class="card" style="margin-bottom: 16px;">
+    <div class="card-body" style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+        <label class="field" style="margin:0; min-width:180px;">
+            <span>Database</span>
+            <select id="db-select" class="select">
+                <option value="crm">CRM</option>
+                <option value="erp">ERP</option>
+                <option value="qa">QA</option>
+            </select>
+        </label>
+        <label class="field" style="margin:0; min-width:260px;">
+            <span>Table</span>
+            <select id="table-select" class="select"></select>
+        </label>
+        <label class="field" style="margin:0; min-width:200px;">
+            <span>Column (search)</span>
+            <select id="col-select" class="select">
+                <option value="">(all text columns)</option>
+            </select>
+        </label>
+        <label class="field" style="margin:0; flex:1; min-width:240px;">
+            <span>Search</span>
+            <input id="q-input" class="input" type="search" placeholder="substring (case-insensitive)…">
+        </label>
+        <label class="field" style="margin:0; min-width:110px;">
+            <span>Rows / page</span>
+            <select id="limit-select" class="select">
+                <option>25</option><option selected>50</option><option>100</option><option>250</option>
+            </select>
+        </label>
+        <div style="display:flex; gap:6px;">
+            <button id="reset-btn" class="btn ghost sm" type="button">↺ RESET</button>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">
+            <span class="accent-icon">▤</span>
+            <span id="title-table" class="mono">…</span>
+            <span id="title-counts" class="card-eyebrow" style="margin-left:8px;"></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <button id="prev-btn" class="btn ghost sm" type="button">◀ PREV</button>
+            <span class="card-eyebrow" id="page-label">—</span>
+            <button id="next-btn" class="btn ghost sm" type="button">NEXT ▶</button>
+        </div>
+    </div>
+    <div class="card-body" id="rows-wrap" style="overflow:auto; max-height: calc(100vh - 380px);">
+        <div class="muted mono">Loading…</div>
+    </div>
+</div>
+
+<script src="/static/js/db_browser.js"></script>
+{% endblock %}

@@ -44,6 +44,10 @@ def register_page_routes(app: FastAPI, templates: Jinja2Templates) -> None:
     async def data_model(request: Request):
         return render(request, "data_model.html", "data_model")
 
+    @app.get("/db-browser", response_class=HTMLResponse)
+    async def db_browser(request: Request):
+        return render(request, "db_browser.html", "db_browser")
+
     @app.get("/system", response_class=HTMLResponse)
     async def system(request: Request):
         runner = request.app.state.runner
