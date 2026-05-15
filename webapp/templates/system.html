@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}System Health · Enterprise AI Workbench{% endblock %}
+{% block breadcrumb %}Operations · <strong>System Health</strong>{% endblock %}
+
+{% block main %}
+<div class="page-header">
+    <div>
+        <div class="page-eyebrow">Runtime · MCP · Databases</div>
+        <h1 class="page-title">System Health</h1>
+        <p class="page-subtitle">Server, tool, and database status. Use this page to verify the demo is fully wired before kicking off questions.</p>
+    </div>
+</div>
+
+<div class="grid k4 g20" id="server-cards" style="margin-bottom: 22px;"></div>
+
+<div class="card" style="margin-bottom: 22px;">
+    <div class="card-header">
+        <div class="card-title">↯ Anthropic runtime</div>
+        <div class="card-eyebrow">Config</div>
+    </div>
+    <div class="card-body" id="runtime-card"></div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">▦ Database table inventory</div>
+        <div class="card-eyebrow">SQLite</div>
+    </div>
+    <div class="card-body" id="db-inventory"></div>
+</div>
+
+<script src="/static/js/system.js"></script>
+{% endblock %}
